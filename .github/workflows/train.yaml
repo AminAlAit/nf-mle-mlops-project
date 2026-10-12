@@ -1,0 +1,74 @@
+name: Train Taxi Model
+
+on:
+  push:
+    branches: [avi]
+    paths:
+      - ".github/workflows/train.yaml"
+      - "src/**"
+      - "dvc.yaml"
+      - "dvc.lock"
+      - ".python-version"
+      - "pyproject.toml"
+      - "uv.lock"
+  pull_request:
+    paths:
+      - ".github/workflows/train.yaml"
+      - "src/**"
+      - "dvc.yaml"
+      - "dvc.lock"
+      - ".python-version"
+      - "pyproject.toml"
+      - "uv.lock"
+  workflow_dispatch:        # adds a "Run workflow" button in the Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    env:
+      # .env is git-ignored, so CI sets the tracking URI here instead.
+      MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: "0.11.19"
+
+      - name: Install project dependencies
+        run: uv sync --locked
+
+      - name: Run the DVC pipeline (download data + train + log to MLflow)
+        run: uv run dvc repro
+
+      - name: Show training metrics
+        run: uv run dvc metrics show
+
+      # Uncomment after Step 4, once src/check_api.py exists.
+      # - name: Smoke test the API
+      #   run: uv run python -m src.check_api
+
+      - name: Upload MLflow runs, model and metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: training-output
+          path: |
+            mlflow.db
+            mlruns/
+            mlartifacts/
+            models/
+            reports/
+          if-no-files-found: warn
