@@ -28,7 +28,12 @@ dev = [
     "ipywidgets>=8.1.9",
     # MLflow records pip's version when packaging the notebook model.
     "pip>=26.0",
+    "pytest>=9.1.1",
 ]
 
 [tool.rumdl]
 disable = ["MD013"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
