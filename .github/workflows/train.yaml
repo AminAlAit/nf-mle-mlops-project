@@ -56,9 +56,8 @@ jobs:
       - name: Show training metrics
         run: uv run dvc metrics show
 
-      # Uncomment after Step 4, once src/check_api.py exists.
-      # - name: Smoke test the API
-      #   run: uv run python -m src.check_api
+      - name: Smoke test the API
+        run: uv run python -m src.check_api
 
       - name: Upload MLflow runs, model and metrics
         if: always()

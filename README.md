@@ -34,6 +34,8 @@ flowchart LR
 | `src/api.py` | FastAPI service: `/predict`, `/health`, `/metrics` |
 | `src/send_requests.py` | Replays real trips against the API |
 | `src/generate_report.py` | Evidently drift report: training data vs. API requests |
+| `src/check_drift.py` | Drift on the shifted batch (2/4 columns) triggered retraining → model v4 |
+| `src/check_api.py` | Checks health, predict, negative distance, zone 999, missing field, metrics, logged row |
 | `dvc.yaml` / `dvc.lock` | Reproducible pipeline and data/model hashes |
 | `.github/workflows/train.yaml` | Automated training in CI |
 | `Dockerfile`, `docker-compose.yaml` | API + Prometheus + Grafana stack |
@@ -93,7 +95,30 @@ uv run python -m src.generate_report
 open monitoring/reports/data_drift_report.html
 ```
 
-### 6. Stop
+### 6. Trigger retraining when meaningful data drift detected
+```bash
+uv run python -m src.check_drift --current monitoring/requests_baseline.csv
+uv run python -m src.check_drift --current monitoring/requests_shifted.csv
+```
+Retrain
+```bash
+uv run python -m src.check_drift --current monitoring/requests_shifted.csv --retrain
+docker compose restart api
+```
+
+### 7. Add a small smoke test for the API or training entry point
+
+```bash
+uv run python -m src.check_api
+```
+
+```bash
+git add src/check_api.py .github/workflows/train.yaml
+git commit -m "Add API smoke test to CI"
+git push
+```
+
+### 8. Stop
 ```bash
 docker compose down
 ```
