@@ -1,0 +1,50 @@
+schema: '2.0'
+stages:
+  prepare_data:
+    cmd: uv run python -m src.preprocess --year 2024 --month 1
+    deps:
+    - path: src/preprocess.py
+      hash: md5
+      md5: f70209354569ab5cad1c1276e7ac4129
+      size: 2833
+    - path: uv.lock
+      hash: md5
+      md5: eb2b9e1a29411888d4018fa8220980e9
+      size: 821512
+    outs:
+    - path: data/green_tripdata_2024-01.parquet
+      hash: md5
+      md5: 33f3af0093a4bea95512fbd0df7f1b84
+      size: 1362284
+  train_model:
+    cmd: uv run python -m src.train --year 2024 --month 1
+    deps:
+    - path: data/green_tripdata_2024-01.parquet
+      hash: md5
+      md5: 33f3af0093a4bea95512fbd0df7f1b84
+      size: 1362284
+    - path: src/preprocess.py
+      hash: md5
+      md5: f70209354569ab5cad1c1276e7ac4129
+      size: 2833
+    - path: src/train.py
+      hash: md5
+      md5: cc881b2b1ea123f5a5af6e708181fe0f
+      size: 5935
+    - path: uv.lock
+      hash: md5
+      md5: eb2b9e1a29411888d4018fa8220980e9
+      size: 821512
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: 9abf03b5c22f27206212ef9862394740
+      size: 14514
+    - path: models/model_metadata.json
+      hash: md5
+      md5: b437d5093813fcaec313f5864d08c398
+      size: 264
+    - path: reports/train_metrics.json
+      hash: md5
+      md5: e49a7291c9eccaaefdef334367fe4c80
+      size: 65

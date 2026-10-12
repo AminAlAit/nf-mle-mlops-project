@@ -1,0 +1,21 @@
+stages:
+  prepare_data:
+    cmd: uv run python -m src.preprocess --year 2024 --month 1
+    deps:
+      - src/preprocess.py
+      - uv.lock
+    outs:
+      - data/green_tripdata_2024-01.parquet
+
+  train_model:
+    cmd: uv run python -m src.train --year 2024 --month 1
+    deps:
+      - src/preprocess.py
+      - src/train.py
+      - data/green_tripdata_2024-01.parquet
+      - uv.lock
+    outs:
+      - models/model.joblib
+      - models/model_metadata.json
+    metrics:
+      - reports/train_metrics.json
