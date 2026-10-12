@@ -1,0 +1,40 @@
+name: Taxi Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  train-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Download dataset (mock DVC pull)
+        run: |
+          mkdir -p data/raw
+          curl -o data/raw/green_tripdata_2024-01.parquet https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2024-01.parquet
+
+      - name: Run training pipeline
+        run: uv run python src/train.py
+
+      - name: Verify outputs
+        run: |
+          test -f models/model.joblib
+          test -f reports/train_metrics.json
