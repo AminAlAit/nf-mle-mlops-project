@@ -112,11 +112,12 @@ docker compose restart api
 uv run python -m src.check_api
 ```
 
-```bash
-git add src/check_api.py .github/workflows/train.yaml
-git commit -m "Add API smoke test to CI"
-git push
+Results:
 ```
+API checks passed: health, prediction (10.26 min), 3x HTTP 422, /metrics, request logging.
+```
+
+Then add, commit, and push changes to GH.
 
 ### 8. Stop
 ```bash
