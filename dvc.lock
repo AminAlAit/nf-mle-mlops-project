@@ -1,0 +1,30 @@
+schema: '2.0'
+stages:
+  train_model:
+    cmd: uv run python src/train.py
+    deps:
+    - path: data/raw/green_tripdata_2024-01.parquet
+      hash: md5
+      md5: 33f3af0093a4bea95512fbd0df7f1b84
+      size: 1362284
+    - path: src/train.py
+      hash: md5
+      md5: 8cad0590898b7c07c4e4a7f35b320750
+      size: 5098
+    - path: uv.lock
+      hash: md5
+      md5: a8d1fb48661e0d96da56c71c29e6c173
+      size: 826169
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: b47adccca7e35b2a78e318a74fef7d30
+      size: 14514
+    - path: models/model_metadata.json
+      hash: md5
+      md5: 939571c3ae9c21982bfdafb9c888d023
+      size: 128
+    - path: reports/train_metrics.json
+      hash: md5
+      md5: e115edf4f94284d719749d3480940044
+      size: 107
