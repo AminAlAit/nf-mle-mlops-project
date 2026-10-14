@@ -10,6 +10,8 @@ with Prometheus, Grafana and Evidently.
 > *completed* trip, not an estimate available at pickup. Predictions are therefore
 > not usable for real-time ETA before a trip starts.
 
+Built from a neuefische course template as part of my bootcamp miniproject. My work is in `src/`, `monitoring/`, `dvc.yaml` and .`github/workflows/train.yaml`. `solution/` is the course’s reference example.
+
 ## Architecture
 
 ```mermaid
@@ -43,7 +45,7 @@ flowchart LR
 
 ## Model
 
-- **Data:** NYC green taxi trips, January 2024 (~49545 rows after cleaning)
+- **Data:** NYC green taxi trips, January 2024 (49545 rows after cleaning)
 - **Features:** `PULocationID`, `DOLocationID` (categorical), `trip_distance`
 - **Target:** trip duration in minutes (filtered to 1–60 min, 0.1–100 miles)
 - **Model:** `DictVectorizer` + `LinearRegression`
@@ -107,7 +109,7 @@ uv run python -m src.check_drift --current monitoring/requests_shifted.csv --ret
 docker compose restart api
 ```
 
-### 7. Add a small smoke test for the API or training entry point
+### 7. API smoke test
 
 ```bash
 uv run python -m src.check_api
@@ -156,5 +158,4 @@ the MLflow store, model and metrics as a build artifact.
 - `trip_distance` is only known after the trip (historical replay).
 - The request log has no true durations, so live accuracy can't be measured.
 - MLflow in CI uses a temporary SQLite store; a hosted tracking server would persist runs.
-- Possible extensions: retrain automatically on drift, API smoke tests in CI,
-  `params.yaml` for the training month.
+- Possible extensions: run the drift check on a schedule so retraining needs no manual step, run the API smoke tests in CI, and add a  `params.yaml` for the training month.
