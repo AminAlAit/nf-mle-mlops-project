@@ -43,11 +43,11 @@ flowchart LR
 
 ## Model
 
-- **Data:** NYC green taxi trips, January 2024 (~<N> rows after cleaning)
+- **Data:** NYC green taxi trips, January 2024 (~49545 rows after cleaning)
 - **Features:** `PULocationID`, `DOLocationID` (categorical), `trip_distance`
 - **Target:** trip duration in minutes (filtered to 1–60 min, 0.1–100 miles)
 - **Model:** `DictVectorizer` + `LinearRegression`
-- **Result:** RMSE ≈ **<5.068> min** on a 20% hold-out (same as the notebook baseline)
+- **Result:** RMSE ≈ **5.068 min** on a 20% hold-out (same as the notebook baseline)
 
 ## How to Run
 
