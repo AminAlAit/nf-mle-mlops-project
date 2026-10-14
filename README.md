@@ -86,7 +86,7 @@ curl -X POST http://127.0.0.1:8000/predict \
 ```
 Response:
 ```json
-{"predicted_duration_min": 10.55, "model_version": "3"}
+{"predicted_duration_min": 10.55, "model_version": "5"}
 ```
 
 ### 5. Send traffic and generate the drift report
@@ -136,6 +136,8 @@ the MLflow store, model and metrics as a build artifact.
 
 ### MLflow
 ![MLflow run](assets/mlflow-run.png)
+![Registered model versions](assets/mlflow-registered-model.png)
+*Model registry: five versions of `green-taxi-ride-duration`, with the `@production` alias on the latest. A new version is registered on every training run, including the drift-triggered retrain.*
 
 ### GitHub Actions
 ![Successful workflow](assets/github-actions-run.png)

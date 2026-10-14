@@ -42,7 +42,7 @@ stages:
       size: 14514
     - path: models/model_metadata.json
       hash: md5
-      md5: b437d5093813fcaec313f5864d08c398
+      md5: 398970f64438d0c62e90b62e0bfcb737
       size: 264
     - path: reports/train_metrics.json
       hash: md5
